@@ -61,7 +61,7 @@
         </div>
       </div>
       <div class="bg-blue-50/20 flex divide-x divide-dashed">
-        <div class="py-4 px-6 flex gap-4 items-center w-[480px]">
+        <div class="py-4 px-6 flex gap-4 w-[480px]">
           <span>Pesan:</span>
           <UInput
             placeholder="(Opsional) Tinggalkan pesan ke penjual"

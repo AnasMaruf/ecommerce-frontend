@@ -4,7 +4,12 @@
       ><UButton variant="link" color="white" :padded="false" class="px-3"
         >Daftar</UButton
       >
-      <UButton variant="link" color="white" :padded="false" class="px-3"
+      <UButton
+        variant="link"
+        color="white"
+        :padded="false"
+        class="px-3"
+        to="/login"
         >Login</UButton
       >
     </UContainer>
