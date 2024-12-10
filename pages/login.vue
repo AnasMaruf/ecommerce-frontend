@@ -15,11 +15,11 @@
                     <UInput placeholder="No. Handphone/Email" size="lg"/>
                 </UFormGroup>
                 <UFormGroup>
-                    <UInput placeholder="Password" size="lg"/>
+                    <BaseInputPassword placeholder="Password" size="lg"/>
                 </UFormGroup>
                 <div>
                     <UButton block>Log In</UButton>
-                    <UButton variant="link" color="blue" :padded="false">Lupa Password</UButton>
+                    <UButton variant="link" color="blue" :padded="false" to="/forgot-password">Lupa Password</UButton>
                 </div>
             </form>
             <UDivider label="ATAU" class="my-4" :ui="{ label:'text-gray-400 font-normal' }" />

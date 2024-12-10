@@ -1,7 +1,12 @@
 <template>
   <div class="header-profile">
     <UContainer class="header-profile-container"
-      ><UButton variant="link" color="white" :padded="false" class="px-3"
+      ><UButton
+        variant="link"
+        color="white"
+        :padded="false"
+        class="px-3"
+        to="/registration"
         >Daftar</UButton
       >
       <UButton

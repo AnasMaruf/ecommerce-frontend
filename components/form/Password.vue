@@ -1,32 +1,54 @@
 <template>
   <div>
     <div class="flex gap-7 items-center">
-      <UButton icon="i-heroicons:arrow-left" variant="link" />
+      <UButton
+        icon="i-heroicons:arrow-left"
+        variant="link"
+        @click="emit('back')"
+      />
       <h3 class="text-xl font-normal">Atur Password Kamu</h3>
     </div>
     <div class="px-16 pb-16 pt-9">
       <form class="space-y-6">
         <p class="text-center text-sm text-black/80">Buat password baru</p>
         <UFormGroup>
-          <BaseInputPassword placeholder="password" size="lg" />
+          <BaseInputPassword
+            v-model="password"
+            placeholder="password"
+            size="lg"
+          />
         </UFormGroup>
-        <ul>
+        <ul class="!mt-2">
           <li
             v-for="validation in validationMessage"
             :key="validation.key"
-            class="text-red-500 text-sm"
+            class="text-sm py-1"
+            :class="{
+              'text-red-500': !isContain[validation.key],
+              'text-green-500': isContain[validation.key],
+            }"
           >
             {{ validation.message }}
-            <UIcon name="i-heroicons:x-circle" class="w-5 h-5 -mb-1.5" />
+            <UIcon
+              :name="
+                isContain[validation.key]
+                  ? 'i-heroicons:check-circle'
+                  : 'i-heroicons:x-circle'
+              "
+              class="w-5 h-5 -mb-1.5"
+            />
           </li>
         </ul>
-        <UButton block class="uppercase">Berikutnya</UButton>
+        <UButton block class="uppercase" @click="emit('next')"
+          >Berikutnya</UButton
+        >
       </form>
     </div>
   </div>
 </template>
 
 <script setup>
+const emit = defineEmits(["next", "back"]);
 const password = ref("");
 const validationMessage = [
   { message: "Min. satu karakter huruf kecil", key: "lowercase" },
@@ -38,7 +60,7 @@ const validationMessage = [
   },
 ];
 
-const isContain = ref({
+const isContain = reactive({
   lowercase: false,
   uppercase: false,
   validLength: false,
@@ -57,6 +79,13 @@ function hasValidLength(str) {
 function hasAllowedChar(str) {
   return /^[a-zA-Z0-9,.!?-]+$/.test(str);
 }
+
+watch(password, (newValue) => {
+  isContain.lowercase = hasLowerCase(newValue);
+  isContain.uppercase = hasUpperCase(newValue);
+  isContain.validLength = hasValidLength(newValue);
+  isContain.allowedChar = hasAllowedChar(newValue);
+});
 </script>
 
 <style scoped></style>
