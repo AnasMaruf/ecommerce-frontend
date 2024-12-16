@@ -1,9 +1,9 @@
 <template>
   <div>
     <DefineItem v-slot="{ icon, label }">
-      <div class="flex gap-2 items-center hover:text-primary">
-        <UIcon v-if="icon" :name="icon" class="w-6 h-6" />
-        <p class="text-sm font-bold">{{ label }}</p>
+      <div class="sidebar-item">
+        <UIcon v-if="icon" :name="icon" class="sidebar-item-icon" />
+        <p class="sidebar-item-label">{{ label }}</p>
       </div>
     </DefineItem>
     <NuxtLink v-if="!item.children" :to="item.to">
@@ -11,12 +11,7 @@
     </NuxtLink>
     <template v-else>
       <UAccordion
-        :items="[
-          {
-            label: item.label,
-            icon: item.icon,
-          },
-        ]"
+        :items="[item]"
         :ui="{
           item: {
             color: 'text-slate-800',
@@ -35,7 +30,7 @@
           </div>
         </template>
         <template #item>
-          <div class="pl-8 flex flex-col gap-2">
+          <div class="pl-8 flex flex-col gap-4 mt-4">
             <LayoutsSidebarItem
               v-for="(child, index) in item.children"
               :key="`child-${child.label}-${index}`"
@@ -58,4 +53,17 @@ defineProps({
 const [DefineItem, ReuseItem] = createReusableTemplate();
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped>
+.sidebar-item {
+  @apply flex gap-2 items-center hover:text-primary;
+}
+.sidebar-item-icon {
+  @apply w-6 h-6;
+}
+.sidebar-item-label {
+  @apply text-sm;
+}
+.router-link-active {
+  @apply text-primary;
+}
+</style>
