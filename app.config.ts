@@ -33,6 +33,12 @@ export default defineAppConfig({
     input: {
       rounded: "rounded-sm",
     },
+    textarea: {
+      rounded: "rounded-sm",
+    },
+    radio: {
+      label: "font-normal",
+    },
     checkbox: {
       label: "font-normal text-black/80",
       base: "disabled:bg-gray-100",

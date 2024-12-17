@@ -2,7 +2,7 @@
   <div>
     <div class="flex justify-between gap-4 items-center">
       <h3 class="text-lg font-medium">Alamat Saya</h3>
-      <UButton>Tambah alamat baru</UButton>
+      <UButton @click="openEditor = true">Tambah alamat baru</UButton>
     </div>
     <hr class="mt-5 mb-3 border-gray-200/60" />
     <h4 class="text-lg font-normal">Alamat</h4>
