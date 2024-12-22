@@ -32,7 +32,7 @@
             title="Kawabata Sepatu Sandal
 Kasual Slingback Mules"
             price="10000"
-            image="https://s3-alpha-sig.figma.com/img/48e9/7de7/d13128b9ad75dda5a6e64cd6c03b5de2?Expires=1733097600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=arQJggd1DIXGPXRdXvmoJ2p-4lgdmK-tX0WO9rDoFVxLBa36xgqwKkSqDuF-B~MxUa2-WWR5dOVQFoN-E5TbzgFIvYA1VRUa36j0gLsjwZFferwZxIMqlE4qCE4h2RxZrGrhy4pIpKEFplUY~01tS0ThUXjjpJpDD4lWT7Ded4f~lic3Zk2CTqQNVTJkXQjor5OTOdMb2emrCEhmbjVP2hHtST6rKT6bNq0BN6JKfPiwIcMTwA7or9eEZmj-ccnIkD1TKlimKDeVAkAtI-kkaumxnsYuV-gATucMXqW9dEznTFfd-CaEnYConOEHO9EV5XW3RQagaZGuPOwftCG9hw__"
+            image="https://picsum.photos/1920/1080?random=1"
             :slug="`product-${i}`"
           />
         </div>

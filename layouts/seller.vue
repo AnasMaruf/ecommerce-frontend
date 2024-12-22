@@ -9,7 +9,8 @@
 </template>
 
 <script setup>
-const sidebarItems = [
+const route = useRoute();
+const sidebarItems = computed(() => [
   {
     label: "Pesanan",
     icon: "i-heroicons:clipboard-document-list",
@@ -21,11 +22,12 @@ const sidebarItems = [
     children: [
       {
         label: "Produk Saya",
-        to: "/seller/produk",
+        to: "/seller/product",
+        exact: true,
       },
       {
         label: "Tambah Produk Baru",
-        to: "/seller/produk/add",
+        to: "/seller/product/add",
       },
     ],
   },
@@ -44,7 +46,7 @@ const sidebarItems = [
       },
     ],
   },
-];
+]);
 </script>
 
 <style lang="scss" scoped>
@@ -58,6 +60,7 @@ const sidebarItems = [
 .main-content {
   @apply flex-1;
   @apply bg-black/10;
+  @apply pt-[calc(56px+16px)] pb-4 pl-[calc(240px+32px)] pr-8;
 }
 
 .seller-sidebar {

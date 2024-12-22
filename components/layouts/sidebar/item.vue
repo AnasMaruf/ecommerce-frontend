@@ -6,12 +6,23 @@
         <p class="sidebar-item-label">{{ label }}</p>
       </div>
     </DefineItem>
-    <NuxtLink v-if="!item.children" :to="item.to">
+    <NuxtLink
+      v-if="!item.children"
+      :to="item.to"
+      :active-class="
+        item.exact ? 'router-link-active is-exact' : 'router-link-active'
+      "
+    >
       <ReuseItem v-bind="item" />
     </NuxtLink>
     <template v-else>
       <UAccordion
-        :items="[item]"
+        :items="[
+          {
+            defaultOpen: $route.path.includes(item.children?.[0]?.to),
+            ...item,
+          },
+        ]"
         :ui="{
           item: {
             color: 'text-slate-800',
@@ -63,7 +74,8 @@ const [DefineItem, ReuseItem] = createReusableTemplate();
 .sidebar-item-label {
   @apply text-sm;
 }
-.router-link-active {
+.router-link-active.is-exact.router-link-exact-active,
+.router-link-active:not(.is-exact) {
   @apply text-primary;
 }
 </style>
