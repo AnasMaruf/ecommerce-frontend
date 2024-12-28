@@ -47,5 +47,14 @@ export default defineAppConfig({
     badge: {
       rounded: "rounded-sm",
     },
+    selectMenu: {
+      rounded: "rounded-sm",
+    },
+    select: {
+      rounded: "rounded-sm",
+    },
+    notifications: {
+      position: "top-0 bottom-[unset]",
+    },
   },
 });
