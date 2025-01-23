@@ -6,12 +6,27 @@
     />
     <p class="text-center text-sm text-black/85">
       Pendaftaran anda berhasil dan anda akan diarahkan ke homepage dalam
-      {{ 3 }} detik
+      {{ displayValue }} detik
     </p>
     <UButton block to="/">Arahkan Sekarang</UButton>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+const props = defineProps({
+  redirectTo: {
+    type: String,
+    default: "/",
+  },
+});
+const router = useRouter();
+const { startCountdown, displayValue } = useCountdown();
 
-<style scoped></style>
+function redirectToHomepage() {
+  router.replace(props.redirectTo);
+}
+
+startCountdown(3, redirectToHomepage);
+</script>
+
+<style lang="scss" scoped></style>

@@ -13,7 +13,7 @@
           <span v-if="profile.username" class="profile-item-text">{{
             profile.username || "-"
           }}</span>
-          <UInput v-else v-model="profile.name" class="flex-1" size="lg" />
+          <UInput v-else v-model="profile.username" class="flex-1" size="lg" />
         </div>
         <div class="profile-item">
           <p class="profile-item-title">Nama</p>
