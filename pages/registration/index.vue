@@ -19,7 +19,8 @@
                   </div>
               </form>
               <UDivider label="ATAU" class="my-4" :ui="{ label:'text-gray-400 font-normal' }" />
-              <UButton block color="white"><img src="~/assets/images/google.png" alt="" class="w-6">Google</UButton>
+              <BaseButtonGoogleSignIn />
+
               <p class="text-sm font-normal text-black/55 text-center mt-8">Punya akun? <NuxtLink to="/login" class="text-primary">Log in</NuxtLink></p>
           </UCard>
         </div>
