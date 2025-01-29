@@ -1,19 +1,18 @@
 <template>
-  <NuxtLink class="product-card" to="/">
+  <NuxtLink class="product-card" :to="`/products/${slug}`">
     <div v-if="discount" class="product-discount">
       -{{ formattedDiscount }}%
     </div>
-    <img :src="image" alt="" />
+    <NuxtImg :src="image" format="webp" />
     <div class="product-card-detail">
       <p>
-        Kawabata Sepatu Sandal Kasual Slingback Mules Kawabata Sepatu Sandal
-        Kasual Slingback Mules…
+        {{ title }}
       </p>
       <div class="product-card-footer">
         <div class="product-price">
           <p><span>Rp</span>{{ formattedPrice }}</p>
         </div>
-        <div v-if="sale != undefined" class="product-sale">
+        <div v-if="sale !== undefined" class="product-sale">
           <p>{{ formattedSale }} Terjual</p>
         </div>
       </div>
@@ -33,7 +32,7 @@ const props = defineProps({
   },
   price: {
     type: Number,
-    default: 100000,
+    default: 0,
   },
   sale: {
     type: Number,
@@ -42,6 +41,10 @@ const props = defineProps({
   discount: {
     type: Number,
     default: undefined,
+  },
+  slug: {
+    type: String,
+    default: "",
   },
 });
 const formattedPrice = computed(() => formatNumber(props.price));
@@ -57,6 +60,7 @@ const formattedDiscount = computed(() => formatNumber(props.discount));
 
   @apply hover:border-primary;
 }
+
 .product-discount {
   @apply absolute;
   @apply right-0;
@@ -64,10 +68,12 @@ const formattedDiscount = computed(() => formatNumber(props.discount));
   @apply px-1 py-0.5;
   @apply text-primary text-xs font-normal;
 }
+
 .product-card img {
   @apply aspect-[1/1];
   @apply object-cover;
 }
+
 .product-card-detail {
   @apply p-2;
 }
@@ -75,17 +81,20 @@ const formattedDiscount = computed(() => formatNumber(props.discount));
   @apply text-sm font-normal text-black/80;
   @apply line-clamp-2;
 }
+
 .product-card-footer {
   @apply mt-8;
   @apply flex justify-between gap-2 items-center;
 }
+
 .product-price p {
   @apply text-primary font-medium text-base;
 }
 .product-price span {
   @apply text-xs;
 }
+
 .product-sale p {
-  @apply text-xs;
+  @apply text-xs font-normal;
 }
 </style>
