@@ -1,7 +1,7 @@
 <template>
   <UPagination
     v-model="page"
-    :page-count="5"
+    :page-count="10"
     :total="total"
     :inactive-button="{
       variant: 'link',

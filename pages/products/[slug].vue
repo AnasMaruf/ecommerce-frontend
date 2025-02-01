@@ -1,42 +1,73 @@
 <template>
-  <UContainer as="section" class="flex flex-col gap-5 py-5">
+  <UContainer
+    v-if="statusDetail === 'pending'"
+    as="section"
+    class="flex flex-col gap-5 py-5"
+  >
+    <UCard>
+      <div class="product-briefing">
+        <div class="product-image">
+          <USkeleton class="w-[450px] h-[450px]" />
+        </div>
+        <div class="product-information space-y-6">
+          <USkeleton class="w-full h-6" />
+          <USkeleton class="w-10/12 h-6" />
+          <USkeleton class="w-8/12 h-6" />
+          <USkeleton class="w-10/12 h-6" />
+          <USkeleton class="w-6/12 h-6" />
+        </div>
+      </div>
+    </UCard>
+  </UContainer>
+  <UContainer v-else as="section" class="flex flex-col gap-5 py-5">
     <UBreadcrumb :links="links" :ui="uiBreadcrumb" />
     <UCard>
       <div class="product-briefing">
         <div class="product-image">
-          <FeatureProductDetailCarousel :items="items" />
+          <FeatureProductDetailCarousel :items="sliders" />
         </div>
         <div class="product-information">
           <div class="product-title">
-            <h2>{{ dataDummy.name }}</h2>
+            <h2>{{ detailProduct.name }}</h2>
             <div class="product-summary">
               <div class="product-summary-item">
-                <span class="text-primary">{{ dataDummy.rating }}</span>
-                <BaseRating :model-value="dataDummy.rating" disabled />
+                <span class="text-primary">{{ detailProduct.rating }}</span>
+                <BaseRating :model-value="detailProduct.rating" disabled />
               </div>
               <div class="product-summary-item">
-                <span class="test-black/80">{{ dataDummy.rating_count }}</span>
+                <span class="test-black/80">{{
+                  detailProduct.rating_count
+                }}</span>
                 <span class="product-summary-item-description">Penilaian</span>
               </div>
               <div class="product-summary-item">
-                <span class="test-black/80">{{ dataDummy.sale_count }}</span>
+                <span class="test-black/80">{{
+                  detailProduct.sale_count
+                }}</span>
                 <span class="product-summary-item-description">Terjual</span>
               </div>
             </div>
           </div>
           <div class="product-price">
-            <p class="text-gray-400 line-through font-normal">
-              Rp{{ formatNumber(24000) }}
+            <template v-if="detailProduct.price_sale">
+              <p class="text-gray-400 line-through font-normal">
+                Rp{{ rawPrice }}
+              </p>
+              <p class="text-primary font-normal text-3xl">
+                Rp.{{ salePrice }}
+              </p>
+              <UBadge size="xs"
+                >{{ detailProduct.price_discount_percentage }}% OFF</UBadge
+              >
+            </template>
+            <p v-else class="text-primary font-normal text-3xl">
+              Rp.{{ rawPrice }}
             </p>
-            <p class="text-primary font-normal text-3xl">
-              Rp.{{ formatNumber(125000) }}
-            </p>
-            <UBadge size="xs">50% OFF</UBadge>
           </div>
           <div class="product-variant">
             <div class="flex flex-col gap-6">
               <div
-                v-for="variant in dataDummy.variations"
+                v-for="variant in detailProduct.variations"
                 :key="variant.name"
                 class="flex gap-2 items-center"
               >
@@ -81,14 +112,14 @@
     <UCard>
       <div class="product-seller">
         <div class="flex gap-6 items-center w-96">
-          <UAvatar :alt="dataDummy.seller.store_name" size="3xl" />
+          <UAvatar :alt="detailProduct.seller.store_name" size="3xl" />
           <div>
-            <h1>{{ dataDummy.seller.store_name }}</h1>
+            <h1>{{ detailProduct.seller.store_name }}</h1>
             <UButton
               color="white"
               size="xs"
               class="mt-2"
-              :to="`/shop/${dataDummy.seller.username}`"
+              :to="`/shop/${detailProduct.seller.username}`"
               ><IconShop /> Kunjungi Toko</UButton
             >
           </div>
@@ -97,15 +128,15 @@
         <div class="grid grid-cols-2 items-center flex-1">
           <div class="flex gap-2 text-sm">
             <p class="text-black/40 w-36">Penilaian</p>
-            <p class="text-primary">{{ dataDummy.seller.rating_count }}</p>
+            <p class="text-primary">{{ detailProduct.seller.rating_count }}</p>
           </div>
           <div class="flex gap-2 text-sm">
             <p class="text-black/40 w-36">Bergabung</p>
-            <p class="text-primary">{{ dataDummy.seller.join_date }}</p>
+            <p class="text-primary">{{ detailProduct.seller.join_date }}</p>
           </div>
           <div class="flex gap-2 text-sm">
             <p class="text-black/40 w-36">Produk</p>
-            <p class="text-primary">{{ dataDummy.seller.product_count }}</p>
+            <p class="text-primary">{{ detailProduct.seller.product_count }}</p>
           </div>
         </div>
       </div>
@@ -122,12 +153,12 @@
               <UBreadcrumb
                 :links="[
                   {
-                    label: dataDummy.category.parent.name,
+                    label: detailProduct.category.parent.name,
                     to: '/',
                   },
                   {
-                    label: dataDummy.category.name,
-                    to: `/categories/${dataDummy.category.parent.slug}/${dataDummy.category.parent.slug}`,
+                    label: detailProduct.category.name,
+                    to: `/categories/${detailProduct.category.parent.slug}/${detailProduct.category.parent.slug}`,
                   },
                 ]"
                 :ui="{
@@ -139,12 +170,12 @@
           </div>
           <div class="product-detail-item">
             <p>Stok</p>
-            <div class="text-sm font-normal">{{ dataDummy.stock }}</div>
+            <div class="text-sm font-normal">{{ detailProduct.stock }}</div>
           </div>
           <div class="product-detail-item">
             <p>Dikirim dari</p>
             <div class="text-sm font-normal">
-              {{ dataDummy.seller.send_from.city.name }}
+              {{ detailProduct.seller.send_from.city.name }}
             </div>
           </div>
         </div>
@@ -153,7 +184,7 @@
         </div>
         <div
           class="text-sm text-black/80 whitespace-pre-line"
-          v-text="dataDummy.description"
+          v-text="detailProduct.description"
         />
       </div>
     </UCard>
@@ -164,10 +195,10 @@
       >
         <div class="flex flex-col items-center">
           <p class="text-primary text-lg">
-            <span class="text-3xl">{{ dataDummy.rating }}</span> dari 5
+            <span class="text-3xl">{{ detailProduct.rating }}</span> dari 5
           </p>
           <BaseRating
-            :model-value="dataDummy.rating"
+            :model-value="detailProduct.rating"
             disabled
             size="lg"
             class="mt-2"
@@ -187,20 +218,22 @@
               color="white"
               size="xs"
               class="min-w-24 text-sm justify-center"
-              >{{ i }} Bintang ({{ dataDummy.review_summary[index] || 0 }})
+              >{{ i }} Bintang ({{ detailProduct.review_summary[index] || 0 }})
             </UButton>
           </div>
           <UButton
             color="white"
             size="xs"
             class="min-w-24 text-sm justify-center"
-            >Dengan Komentar ({{ dataDummy.review_summary.with_description }})
+            >Dengan Komentar ({{
+              detailProduct.review_summary.with_description
+            }})
           </UButton>
           <UButton
             color="white"
             size="xs"
             class="min-w-24 text-sm justify-center"
-            >Dengan Media ({{ dataDummy.review_summary.with_attachment }})
+            >Dengan Media ({{ detailProduct.review_summary.with_attachment }})
           </UButton>
         </div>
       </div>
@@ -230,13 +263,13 @@
           variant="link"
           class="font-thin"
           :padded="false"
-          :to="`/shop/${dataDummy.seller.username}`"
+          :to="`/shop/${detailProduct.seller.username}`"
           >Lihat Semua <UIcon name="i-heroicons:chevron-right"
         /></UButton>
       </div>
       <div class="grid grid-cols-6 gap-3">
         <BaseProductCard
-          v-for="product in dataDummy.other_product"
+          v-for="product in detailProduct.other_product"
           :key="`product-${product.uuid}`"
           :title="product.title"
           :price="product.price"
@@ -251,161 +284,33 @@
 </template>
 
 <script setup>
+const route = useRoute();
 const page = ref(1);
 const reviews = ref(Array(55));
-const quantity = ref(0);
-const dataDummy = computed(() => {
-  return {
-    uuid: "ebfbf3ac-8010-11ef-9abb-3dda8f3f8c01",
-    name: "Produk 100",
-    slug: "produk-100",
-    price: 100000,
-    price_sale: 80000,
-    rating: 4,
-    rating_count: 2,
-    sale_count: 0,
-    price_discount_percentage: 20,
-    stock: 68,
-    category: {
-      slug: "makanan",
-      name: "Makanan",
-      description: null,
-      parent: {
-        slug: "makanan-minuman",
-        name: "Makanan & Minuman",
-        description: null,
-      },
+const quantity = ref(1);
+const { data: detailProduct, status: statusDetail } = useApi(
+  computed(() => `/server/api/product/${route.params.slug}`),
+  {
+    transform(response) {
+      return response?.data || {};
     },
-    description: "Deskripsi produk 100. Lorem ipsum \n bla bla bla",
-    weight: 9,
-    length: 34,
-    width: 34,
-    height: 97,
-    video_url: "http://localhost:8000/storage/attachment.mp4",
-    seller: {
-      username: "azizah",
-      store_name: "Azizah Store",
-      photo_url:
-        "http://localhost:8000/storage/user-photo/iAdzpaTT8wNzF58ZQ67Ys4YwTzFnQHW3tLFY3msm.jpg",
-      product_count: 33,
-      rating_count: 66,
-      join_date: "2 weeks ago",
-      send_from: {
-        uuid: "8c438746-79c5-11ef-b707-97a05ceb87e2",
-        is_default: true,
-        receiver_name: "Azis Hapidin",
-        receiver_phone: "08888",
-        city: {
-          uuid: "ee8eb26c-78fe-11ef-bd77-9e4478916c69",
-          province: {
-            uuid: "ee8d857c-78fe-11ef-bd77-9e4478916c69",
-            name: "Bali",
-          },
-          external_id: 128,
-          name: "Kabupaten Gianyar",
-        },
-        district: "Bojong",
-        postal_code: "43222",
-        detail_address: "Jl. ABC No. 123",
-        address_note: "Dekat tugu pahlawan",
-        type: "home",
-      },
-    },
-    images: [
-      "http://localhost:8000/storage/attachment2.jpg",
-      "http://localhost:8000/storage/attachment4.jpg",
-      "http://localhost:8000/storage/attachment1.jpg",
-      "http://localhost:8000/storage/attachment3.jpg",
-    ],
-    variations: [
-      {
-        name: "Ukuran",
-        values: ["M", "L", "XL"],
-      },
-      {
-        name: "Warna",
-        values: ["Hitam", "Kuning", "Biru"],
-      },
-    ],
-    review_summary: {
-      1: 0,
-      2: 1,
-      3: 0,
-      4: 0,
-      5: 1,
-      with_attachment: 2,
-      with_description: 2,
-    },
-    other_product: [
-      {
-        uuid: "ebd71974-8010-11ef-9abb-3dda8f3f8c01",
-        name: "Produk 26",
-        slug: "produk-26",
-        price: 86971,
-        price_sale: null,
-        price_discount_percentage: null,
-        sale_count: 0,
-        image_url: "http://localhost:8000/storage/attachment1.jpg",
-        stock: 66,
-      },
-      {
-        uuid: "ebd984de-8010-11ef-9abb-3dda8f3f8c01",
-        name: "Produk 31",
-        slug: "produk-31",
-        price: 95979,
-        price_sale: null,
-        price_discount_percentage: null,
-        sale_count: 0,
-        image_url: "http://localhost:8000/storage/attachment1.jpg",
-        stock: 79,
-      },
-      {
-        uuid: "ebe6e782-8010-11ef-9abb-3dda8f3f8c01",
-        name: "Produk 58",
-        slug: "produk-58",
-        price: 51470,
-        price_sale: null,
-        price_discount_percentage: null,
-        sale_count: 0,
-        image_url: "http://localhost:8000/storage/attachment4.jpg",
-        stock: 59,
-      },
-      {
-        uuid: "ebec2e90-8010-11ef-9abb-3dda8f3f8c01",
-        name: "Produk 68",
-        slug: "produk-68",
-        price: 37069,
-        price_sale: null,
-        price_discount_percentage: null,
-        sale_count: 0,
-        image_url: "http://localhost:8000/storage/attachment3.jpg",
-        stock: 75,
-      },
-      {
-        uuid: "ebf0821a-8010-11ef-9abb-3dda8f3f8c01",
-        name: "Produk 77",
-        slug: "produk-77",
-        price: 92435,
-        price_sale: null,
-        price_discount_percentage: null,
-        sale_count: 0,
-        image_url: "http://localhost:8000/storage/attachment1.jpg",
-        stock: 95,
-      },
-      {
-        uuid: "ebf563c0-8010-11ef-9abb-3dda8f3f8c01",
-        name: "Produk 87",
-        slug: "produk-87",
-        price: 65521,
-        price_sale: null,
-        price_discount_percentage: null,
-        sale_count: 0,
-        image_url: "http://localhost:8000/storage/attachment2.jpg",
-        stock: 12,
-      },
-    ],
-  };
+  }
+);
+
+const sliders = computed(() => {
+  return [
+    { type: "video", src: detailProduct.value?.video_url },
+    ...(detailProduct.value?.images || []).map((img) => ({
+      type: "img",
+      src: img,
+    })),
+  ];
 });
+
+const rawPrice = computed(() => formatNumber(detailProduct.value?.price || 0));
+const salePrice = computed(() =>
+  formatNumber(detailProduct.value?.price_sale || 0)
+);
 
 const links = computed(() => [
   {
@@ -413,15 +318,15 @@ const links = computed(() => [
     to: "/",
   },
   {
-    label: dataDummy.value.category.parent.name,
-    to: `/`,
+    label: detailProduct.value.category.parent.name,
+    to: `/search?categories=${detailProduct.value.category.slug}`,
   },
   {
-    label: dataDummy.value.category.name,
-    to: `/categories/${dataDummy.value.category.parent.slug}/${dataDummy.value.category.slug}`,
+    label: detailProduct.value.category.name,
+    to: `/search?categories=${detailProduct.value.category.slug}`,
   },
   {
-    label: dataDummy.value.name,
+    label: detailProduct.value.name,
   },
 ]);
 
