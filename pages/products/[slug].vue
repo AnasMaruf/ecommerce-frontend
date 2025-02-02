@@ -374,6 +374,22 @@ async function handleAddToCart() {
 
   addToCart(formData);
 }
+
+const titleMeta = computed(
+  () =>
+    `Beli ${detailProduct.value?.name} Hanya Rp${
+      detailProduct.value?.price_sale ? salePrice.value : rawPrice.value
+    }`
+);
+
+useSeoMeta({
+  title: titleMeta,
+  ogTitle: () => `${titleMeta.value} | Syopo`,
+  twitterTitle: () => `${titleMeta.value} | Syopo`,
+  ogImage: () => detailProduct.value?.images?.[0],
+  twitterImage: () => detailProduct.value?.images?.[0],
+  twitterCard: "summary_large_image",
+});
 </script>
 
 <style scoped>
