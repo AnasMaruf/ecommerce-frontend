@@ -5,9 +5,16 @@
       <UContainer class="header-bottom-container">
         <BaseLogo />
         <LayoutsSearchBar v-if="defaultMeta.showSearch" class="flex-1" />
-        <UButton v-if="defaultMeta.showCart" variant="link">
-          <IconCart />
-        </UButton>
+        <UChip
+          v-if="defaultMeta.showCart"
+          :text="countCart"
+          size="2xl"
+          :show="countCart > 0"
+        >
+          <UButton variant="link" to="/cart">
+            <IconCart />
+          </UButton>
+        </UChip>
       </UContainer>
     </div>
   </header>
@@ -36,6 +43,18 @@ const defaultMeta = computed(() => {
         : true,
   };
 });
+
+const { data } = useApi(`/server/api/cart`, {
+  server: false,
+  key: "cart",
+});
+
+const countCart = computed(() =>
+  data.value?.data?.items?.reduce((result, current) => {
+    result += current.qty;
+    return result;
+  }, 0)
+);
 </script>
 
 <style lang="scss" scoped>
