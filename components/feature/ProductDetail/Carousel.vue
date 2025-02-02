@@ -10,11 +10,12 @@
       class="max-h-[450px] aspect-[1/1]"
     >
       <template #default="{ item }">
-        <img
+        <NuxtImg
           v-if="item.type === 'img'"
           :src="item.src"
           class="w-full aspect-[1/1] object-cover"
           draggable="false"
+          format="webp"
         />
         <video
           v-if="item.type === 'video'"
@@ -49,7 +50,7 @@
         class="max-w-[450px]"
       >
         <template #default="{ item, index }">
-          <img
+          <NuxtImg
             v-if="item.type === 'img'"
             :src="item.src"
             class="max-w-[82px] aspect-[1/1] m-1 object-cover"
@@ -59,6 +60,7 @@
                 : 'ring-0',
             ]"
             role="button"
+            format="webp"
             @click="carouselElement?.select(index + 1)"
           />
           <video

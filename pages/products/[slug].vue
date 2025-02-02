@@ -76,14 +76,21 @@
                   <UButton
                     v-for="values in variant.values"
                     :key="`${variant.name}-${values}`"
-                    color="white"
+                    :color="
+                      formProduct[variant.name] === values ? 'primary' : 'white'
+                    "
+                    :variant="
+                      formProduct[variant.name] === values ? 'outline' : 'solid'
+                    "
                     :ui="{
                       base: 'min-w-20 justify-center',
                       padding: {
                         sm: 'px-2 py-2',
                       },
                     }"
-                    >{{ values }}
+                    @click="formProduct[variant.name] = values"
+                  >
+                    {{ values }}
                   </UButton>
                 </div>
               </div>
@@ -91,7 +98,10 @@
           </div>
           <div class="flex gap-2 items-center mt-6">
             <p class="w-28 text-black/55 text-sm">Kuantitas</p>
-            <BaseInputQuantity v-model="quantity" />
+            <BaseInputQuantity
+              v-model="formProduct.quantity"
+              :max="detailProduct.stock || 0"
+            />
           </div>
           <UButton class="mt-6" variant="soft"
             ><IconCartPlus /> Masukkan Keranjang</UButton
@@ -154,11 +164,11 @@
                 :links="[
                   {
                     label: detailProduct.category.parent.name,
-                    to: '/',
+                    to: `/search?categories=${detailProduct.category.slug}`,
                   },
                   {
                     label: detailProduct.category.name,
-                    to: `/categories/${detailProduct.category.parent.slug}/${detailProduct.category.parent.slug}`,
+                    to: `/search?categories=${detailProduct.category.slug}`,
                   },
                 ]"
                 :ui="{
@@ -188,73 +198,11 @@
         />
       </div>
     </UCard>
-    <UCard>
-      <h3 class="text-lg font-normal text-black/85">Penilaian Produk</h3>
-      <div
-        class="mt-3 border border-primary-100/80 bg-primary-50/30 rounded-sm p-8 flex gap-8 items-center"
-      >
-        <div class="flex flex-col items-center">
-          <p class="text-primary text-lg">
-            <span class="text-3xl">{{ detailProduct.rating }}</span> dari 5
-          </p>
-          <BaseRating
-            :model-value="detailProduct.rating"
-            disabled
-            size="lg"
-            class="mt-2"
-          />
-        </div>
-        <div class="flex flex-wrap gap-2 items-center">
-          <UButton
-            variant="outline"
-            size="xs"
-            class="min-w-24 text-sm justify-center"
-            >Semua
-          </UButton>
-          <div class="flex flex-row-reverse gap-2">
-            <UButton
-              v-for="(i, index) in 5"
-              :key="`rating-${i}`"
-              color="white"
-              size="xs"
-              class="min-w-24 text-sm justify-center"
-              >{{ i }} Bintang ({{ detailProduct.review_summary[index] || 0 }})
-            </UButton>
-          </div>
-          <UButton
-            color="white"
-            size="xs"
-            class="min-w-24 text-sm justify-center"
-            >Dengan Komentar ({{
-              detailProduct.review_summary.with_description
-            }})
-          </UButton>
-          <UButton
-            color="white"
-            size="xs"
-            class="min-w-24 text-sm justify-center"
-            >Dengan Media ({{ detailProduct.review_summary.with_attachment }})
-          </UButton>
-        </div>
-      </div>
-      <div class="flex flex-col mt-1 divide-y">
-        <div v-for="i in 5" :key="`review-${i}`" class="flex gap-3 py-4">
-          <UAvatar alt="Anas" size="lg" />
-          <div class="flex-1">
-            <p>Anas</p>
-            <BaseRating :model-value="4" disabled class="mt-1" />
-            <div class="flex gap-1 mt-0.5 text-black/55 text-xs">
-              <p>2024-11-01 13:49</p>
-              <p>Variasi: Vermont Camel, L</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="flex justify-end pt-5">
-        <BasePagination v-model="page" :total="reviews.length" />
-      </div>
-    </UCard>
-    <div class="flex flex-col gap-4 mt-2">
+    <FeatureProductDetailReview :detail="detailProduct" />
+    <div
+      v-if="detailProduct.other_product?.length"
+      class="flex flex-col gap-4 mt-2"
+    >
       <div class="flex justify-between gap-2 items-center">
         <h4 class="uppercase text-black/55 font-medium">
           Produk lain dari toko ini
@@ -285,12 +233,29 @@
 
 <script setup>
 const route = useRoute();
-const page = ref(1);
-const reviews = ref(Array(55));
-const quantity = ref(1);
+
+const formProduct = useState("form-product", () => ({
+  quantity: 1,
+}));
 const { data: detailProduct, status: statusDetail } = useApi(
   computed(() => `/server/api/product/${route.params.slug}`),
   {
+    onResponse({ response }) {
+      if (response.ok) {
+        response._data.data.variations.forEach((variation) => {
+          formProduct.value[variation.name] = "";
+        });
+      }
+
+      if (response.status === 404) {
+        nuxtApp.runWithContext(() => {
+          throw showError({
+            statusCode: 404,
+            message: "Produk tidak ditemukan",
+          });
+        });
+      }
+    },
     transform(response) {
       return response?.data || {};
     },
